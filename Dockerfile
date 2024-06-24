@@ -1,10 +1,28 @@
-FROM rust:1.79.0 AS builder
-
+FROM lukemathwalker/cargo-chef:latest-rust-1.79.0 as chef
 WORKDIR /app
 RUN apt update && apt install lld clang -y
+
+FROM chef as planner
 COPY . .
-ENV SQLX_OFFLINE true
-RUN cargo build --release  
+# Compute a lock-like file for our project
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef as builder
+COPY --from=planner /app/recipe.json recipe.json
+# Build our project dependences, not the application
+RUN cargo chef cook --release --recipe-path recipe.json
+# Upto this point, if dependencies don't change, the tree is the same and all layers are cached
+COPY . .
+ENV SQLX_OFFLINE = true
+# Build the project
+RUN cargo build --release --bin zero2prod
+
+# FROM rust:1.79.0 AS builder
+# WORKDIR /app
+# RUN apt update && apt install lld clang -y
+# COPY . .
+# ENV SQLX_OFFLINE true
+# RUN cargo build --release  
 
 # FROM rust:1.79.0-slim AS runtime
 # WORKDIR /app

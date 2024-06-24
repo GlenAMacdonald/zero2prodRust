@@ -1,0 +1,25 @@
+name: zero2prod
+# Check https://www.digitalocean.com/docs/app-platform/#regional-availability
+# for a list of all the available options.
+# You can get region slugs from
+# https://www.digitalocean.com/docs/platform/availability-matrix/
+region: syd
+services: 
+  - name: zero2prod
+  # Relative to the repo root
+    dockerfile_path: Dockerfile
+    source_dir: .
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: GlenAMacdonald/zero2prodRust
+    health_check:
+      http_path: /health_check
+    # The port the application will be listening to for incoming requests
+    # check configuration/production.yaml
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    # All incoming requests should be routed to our app
+    routes:
+      - path: /
