@@ -1,0 +1,12 @@
+postgresql://newsletter:<PASSWORD>@<HOST>:<PORT>/newsletter?sslmode=require
+
+postgresql://newsletter:AVNS_-msIS4tdp165XwzYVUn@app-2a979bbe-bea1-488d-8aa5-f6a12b4c7fe6-do-user-17032188-0.c.db.ondigitalocean.com:25060/newsletter?sslmode=require
+
+host=app-2a979bbe-bea1-488d-8aa5-f6a12b4c7fe6-do-user-17032188-0.c.db.ondigitalocean.com 
+port=25060 
+username=newsletter 
+password=AVNS_-msIS4tdp165XwzYVUn 
+database=newsletter 
+sslmode=require
+
+Server=<your-server-address>;Database=<your-database>;User Id=<your-username>;Password=<your-password>;

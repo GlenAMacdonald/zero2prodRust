@@ -74,6 +74,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(
             config::File::from(configuration_directory.join(environment_filename))
         )
+        // Add in settings from environment variables
         .add_source(
             config::Environment::with_prefix("APP")
                 .prefix_separator("_")
