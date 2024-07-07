@@ -53,10 +53,12 @@ async fn spawn_app() -> TestApp {
         )
         .expect("Invalid base email client url");
 
+    let timeout = configuration.email_client.timeout();
     let email_client = EmailClient::new(
         base_email_client_url,
         sender_email,
         configuration.email_client.authorization_token,
+        timeout,
     );
 
     let server = zero2prod::startup::run(listener, connection_pool.clone(), email_client)

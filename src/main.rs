@@ -22,10 +22,13 @@ async fn main() -> Result<(), std::io::Error> {
         )
         .expect("Invalid base email client url");
 
+    let timeout = configuration.email_client.timeout();
+
     let email_client = EmailClient::new(
         base_email_client_url,
         sender_email,
-        configuration.email_client.authorization_token
+        configuration.email_client.authorization_token,
+        timeout,
     );
 
     let address = format!("{}:{}", configuration.application.host, configuration.application.port);
