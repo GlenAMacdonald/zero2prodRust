@@ -1,10 +1,18 @@
 # zero2prodRust
 
-To run locally in docker with local db: `./init_db.sh`
+### Run locally in Docker with local DB:
+```SKIP_DOCKER=true ./scripts/init_db.sh```
 
-To run in digital ocean: `doctl apps create --spec spec.yaml`
+### Migrate production Database - via local commandline
+`DATABASE_URL=YOUR-DIGITAL-OCEAN-DB-CONNECTION-STRING sqlx migrate run`
 
-To get Digital ocean deployed apps: `doclt apps list`
+### Run in Digital Ocean:
+`doctl apps create --spec spec.yaml`
 
-To push spec updates to digital ocean: `doctl apps update YOUR-APP-ID --spec=spec.yaml`
+### Get deployed Digital Ocean apps:
+`doclt apps list`
+
+### Push spec updates to Digital Ocean
+`doctl apps update YOUR-APP-ID --spec=spec.yaml` 
+
 
