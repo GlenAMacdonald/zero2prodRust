@@ -14,6 +14,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 # Upto this point, if dependencies don't change, the tree is the same and all layers are cached
 COPY . .
 ENV SQLX_OFFLINE = true
+RUN cargo install sqlx-cli
 # Build the project
 RUN cargo build --release --bin zero2prod
 
