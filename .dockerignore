@@ -1,4 +1,5 @@
 .dockerignore
+dbConnection
 spec.yaml
 target/
 deploy/
