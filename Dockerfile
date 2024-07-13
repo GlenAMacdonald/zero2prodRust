@@ -14,23 +14,8 @@ RUN cargo chef cook --release --recipe-path recipe.json
 # Upto this point, if dependencies don't change, the tree is the same and all layers are cached
 COPY . .
 ENV SQLX_OFFLINE true
-# COPY .sqlx .sqlx
 # Build the project
 RUN cargo build --release --bin zero2prod
-
-# FROM rust:1.79.0 AS builder
-# WORKDIR /app
-# RUN apt update && apt install lld clang -y
-# COPY . .
-# ENV SQLX_OFFLINE true
-# RUN cargo build --release  
-
-# FROM rust:1.79.0-slim AS runtime
-# WORKDIR /app
-# # Copy over the compuled binary from the builder environment to the runtime
-# COPY --from=builder /app/target/release/zero2prod zero2prod
-# COPY configuration configuration
-# ENV APP_ENVIRONMENT production
 
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
