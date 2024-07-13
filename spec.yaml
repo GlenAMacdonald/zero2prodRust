@@ -24,9 +24,6 @@ services:
     routes:
       - path: /
     envs:
-      - key: DATABASE_URL
-        scope: BUILD_TIME
-        value: "postgres://postgres:password@localhost:5432/newsletter"
       - key: APP_DATABASE__USERNAME
         scope: RUN_TIME
         value: ${newsletter.USERNAME}
