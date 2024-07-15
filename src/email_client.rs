@@ -5,14 +5,14 @@ use crate::domain::SubscriberEmail;
 
 pub struct EmailClient {
     http_client: Client,
-    base_url: reqwest::Url,
+    base_url: String,
     sender: SubscriberEmail,
     authorization_token: Secret<String>,
 }
 
 impl EmailClient {
     pub fn new(
-        base_url: reqwest::Url,
+        base_url: String,
         sender: SubscriberEmail,
         authorization_token: Secret<String>,
         timeout: std::time::Duration,
@@ -36,8 +36,7 @@ impl EmailClient {
         html_content: &str,
         text_content: &str
     ) -> Result<(), reqwest::Error> {
-        let url = self.base_url.join("/email")
-            .expect("Could not join '/email' into base_url");
+        let url = format!("{}/email", self.base_url);
         let request_body = SendEmailRequest {
             from: self.sender.as_ref(),
             to: recipient.as_ref(),
@@ -110,7 +109,7 @@ mod tests {
         SubscriberEmail::parse(SafeEmail().fake()).unwrap()
     }
 
-    fn email_client(base_url: reqwest::Url) -> EmailClient {
+    fn email_client(base_url: String) -> EmailClient {
         EmailClient::new(
             base_url,
             email(),
@@ -128,8 +127,7 @@ mod tests {
     impl MockServerConfiguration {
         async fn new() -> Self {
             let mock_server = MockServer::start().await;
-            let base_url = reqwest::Url::parse(mock_server.uri().as_str()).expect("Failed to parse mock server uri");
-            let email_client = email_client(base_url);
+            let email_client = email_client(mock_server.uri());
             let subscriber_email = SubscriberEmail::parse(SafeEmail().fake()).unwrap();
 
             MockServerConfiguration {
