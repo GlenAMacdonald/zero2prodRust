@@ -3,6 +3,9 @@
 ### Run locally in Docker with local DB:
 ```SKIP_DOCKER=true ./scripts/init_db.sh```
 
+### Create sqlx offline queries:
+`cargo sqlx prepare --workspace`
+
 ### Migrate production Database - via local commandline
 `DATABASE_URL=YOUR-DIGITAL-OCEAN-DB-CONNECTION-STRING sqlx migrate run`
 
