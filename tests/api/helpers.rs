@@ -1,4 +1,4 @@
-use argon2::{password_hash::SaltString, Argon2, PasswordHasher, Algorithm, Params, Version};
+use argon2::{password_hash::SaltString, Algorithm, Argon2, Params, PasswordHasher, Version};
 use once_cell::sync::Lazy;
 use sqlx::{PgConnection, PgPool, Connection, Executor};
 use uuid::Uuid;
@@ -145,12 +145,13 @@ impl TestUser {
         Self {
             user_id: Uuid::new_v4(),
             username: Uuid::new_v4().to_string(),
-            password: Uuid::new_v4().to_string()
+            password: "password".to_string(),
         }
     }
 
     async fn store(&self, pool: &PgPool) {
-        let salt = SaltString::generate(&mut rand::thread_rng());
+        // let salt = SaltString::generate(&mut rand::thread_rng());
+        let salt = SaltString::new("ThisIsTheSaltFor").unwrap();
         // Match parameters of the default password
         let password_hash = Argon2::new(
             Algorithm::Argon2id,
