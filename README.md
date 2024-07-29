@@ -18,4 +18,6 @@
 ### Push spec updates to Digital Ocean
 `doctl apps update YOUR-APP-ID --spec=spec.yaml` 
 
+### Remember to set the following environment variables in DO `APP_APPLICATION__HMAC_SECRET`
+`APP_APPLICATION__AUTHORIZATION_TOKEN` from postmark
 
