@@ -1,7 +1,8 @@
 # zero2prodRust
 
-### Run locally in Docker with local DB:
+### Run locally in Docker with local DB and redis (used for session cookies):
 ```SKIP_DOCKER=true ./scripts/init_db.sh```
+```./scripts/init_redis.sh```
 
 ### Create sqlx offline queries:
 `cargo sqlx prepare --workspace`

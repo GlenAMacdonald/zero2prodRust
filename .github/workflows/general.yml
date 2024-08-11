@@ -43,6 +43,10 @@ jobs:
         # Opens tcp port 5432 on the host and service container
         ports:
           - 5432:5432
+      redis:
+        image: redis:7
+        ports: 
+          - 6379:6379
     steps:
         # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
@@ -77,7 +81,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install postgresql-client -y
 
       - name: Migrate database
-        run: SKIP_DOCKER=true ./scripts/init_db.sh
+        run: SKIP_DOCKER=true ./s cripts/init_db.sh
 
       - name: Run tests
         run: cargo test
@@ -132,6 +136,10 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -141,6 +149,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: sqlx-${{ env.SQLX_VERSION }}
+      - name: Install tarpaulin
+        run: cargo install cargo-tarpaulin
       - name: Install sqlx-cli
         run:
           cargo install sqlx-cli
@@ -151,4 +161,4 @@ jobs:
       - name: Migrate database
         run: SKIP_DOCKER=true ./scripts/init_db.sh
       - name: Generate code coverage
-        run: cargo install cargo-tarpaulin && cargo tarpaulin --verbose --workspace
+        run: cargo tarpaulin --verbose --workspace
