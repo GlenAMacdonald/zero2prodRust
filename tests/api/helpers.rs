@@ -3,7 +3,7 @@ use once_cell::sync::Lazy;
 use sqlx::{PgConnection, PgPool, Connection, Executor};
 use uuid::Uuid;
 use wiremock::MockServer;
-use zero2prod::{configuration::{get_configuration, DatabaseSettings}, startup::{get_connection_pool, Application}, telemetry::{get_subscriber, init_subscriber}};
+use zero2prod::{configuration::{get_configuration, DatabaseSettings}, email_client::EmailClient, issue_delivery_worker::{try_execute_task, ExecutionOutcome}, startup::{get_connection_pool, Application}, telemetry::{get_subscriber, init_subscriber}};
 
 static TRACING: Lazy<()> = Lazy::new( || {
     let default_filter_level = "info".to_string();
@@ -36,6 +36,7 @@ pub struct TestApp {
     pub port: u16,
     pub db_pool: PgPool,
     pub email_server: MockServer,
+    pub email_client: EmailClient,
     pub test_user: TestUser,
     pub api_client: reqwest::Client,
 }
@@ -177,6 +178,18 @@ impl TestApp {
             .await
             .expect("Failed to execute request.")
     }
+
+    pub async fn dispatch_all_pending_emails(&self) {
+        loop {
+            if let ExecutionOutcome::EmptyQueue = 
+                try_execute_task(&self.db_pool, &self.email_client)
+                    .await
+                    .unwrap()
+            { 
+                break;
+            }
+        }
+    }
 }
 
 pub async fn spawn_app() -> TestApp {
@@ -217,6 +230,7 @@ pub async fn spawn_app() -> TestApp {
         port: application_port,
         db_pool: get_connection_pool(&configuration.database),
         email_server,
+        email_client: configuration.email_client.client(),
         test_user: TestUser::generate(),
         api_client: client,
     };
